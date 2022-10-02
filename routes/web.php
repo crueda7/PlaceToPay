@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShoppingCartController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +18,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('welcome');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/product', [ProductController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('products.index');
 
-require __DIR__.'/auth.php';
+Route::resource('shoppingCarts', ShoppingCartController::class)
+    ->only(['index', 'create', 'store', 'destroy'])
+    ->middleware(['auth', 'verified']);
+
+Route::post('/storeOrders', [OrderController::class, 'store'])
+    ->name('shop.store');
+
+Route::resource('orders', OrderController::class)
+    ->only(['index', 'create', 'store'])
+    ->middleware(['auth', 'verified']);
+
+Route::get('orders/checkout/{order}/{wallet}', [CheckoutController::class, 'create'])
+    ->name('orders.checkout');
+
+require __DIR__ . '/auth.php';
