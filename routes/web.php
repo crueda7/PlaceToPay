@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShoppingCartController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -19,13 +21,25 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('welcome');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/product', [ProductController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('products.index');
 
-require __DIR__.'/auth.php';
+Route::resource('shoppingCarts', ShoppingCartController::class)
+    ->only(['index', 'create', 'store', 'destroy'])
+    ->middleware(['auth', 'verified']);
+
+Route::post('/storeOrders', [OrderController::class, 'store'])
+    ->name('shop.store');
+
+Route::resource('orders', OrderController::class)
+    ->only(['index', 'create', 'store'])
+    ->middleware(['auth', 'verified']);
+
+Route::get('orders/checkout/{order}/{wallet}', [CheckoutController::class, 'create'])
+    ->name('orders.checkout');
+
+require __DIR__ . '/auth.php';
