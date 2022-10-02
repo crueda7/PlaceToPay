@@ -4,8 +4,9 @@ namespace App\Providers;
 
 use App\Jobs\InformationRequest;
 use App\Models\Order;
+use Illuminate\Support\ServiceProvider;
 
-class JobServiceProvider
+class JobServiceProvider  extends ServiceProvider
 {
     public function boot(): void
     {
