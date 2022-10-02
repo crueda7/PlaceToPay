@@ -194,6 +194,11 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        /*
+         *  Payment Service Providers...
+         */
+        App\Providers\PaymentGatewayProvider::class,
+        App\Providers\JobServiceProvider::class,
 
     ],
 
