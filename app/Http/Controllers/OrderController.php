@@ -28,7 +28,7 @@ class OrderController extends Controller
             ->where('orders.user_id', '=', Auth::user()->id)
             ->orderBy('created_at', 'DESC')->get();
 
-        return Inertia::render('Orders', [
+        return Inertia::render('Order/Orders', [
             'orders' => $orders,
         ]);
     }
