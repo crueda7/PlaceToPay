@@ -3,6 +3,7 @@
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShoppingCartController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,6 +41,7 @@ Route::resource('orders', OrderController::class)
     ->middleware(['auth', 'verified']);
 
 Route::get('orders/checkout/{order}/{wallet}', [CheckoutController::class, 'create'])
+    ->middleware(['auth', 'verified'])
     ->name('orders.checkout');
 
 require __DIR__ . '/auth.php';

@@ -16,6 +16,18 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    /*
+     |-------------------------------------------------------------------------
+     | Dev PlaceToPay WebCheckout
+     |-------------------------------------------------------------------------
+     |Endpoints and authentications keys
+     |
+     */
+    'BASE_ENDPOINT' => env('BASE_ENDPOINT'),
+    'CREATE_REQUEST' => env('CREATE_REQUEST'),
+    'LOGIN' => env('LOGIN'),
+    'SECRET_KEY' => env('SECRET_KEY'),
+    'LOCALE' => env('LOCALE'),
 
     /*
     |--------------------------------------------------------------------------
@@ -194,6 +206,11 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        /*
+         *  Payment Service Providers...
+         */
+        App\Providers\PaymentGatewayProvider::class,
+        App\Providers\JobServiceProvider::class,
 
     ],
 
