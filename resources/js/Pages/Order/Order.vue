@@ -36,8 +36,6 @@ const form = useForm({
 });
 
 onMounted(() => {
-    console.log(props.order);
-    console.log(props.cart);
 
     if (Object.keys(props.cart).length === 0) {
         back();

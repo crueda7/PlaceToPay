@@ -22,6 +22,55 @@ function calculateTotal(details) {
     return total;
 }
 
+async function retryPayment(orderId){
+    store.commit('setLoading', true);
+
+    await axios.post(route('orders.retry'), {
+        order_id: orderId,
+    }).then((response) => {
+        store.commit('setLoading', false);
+        if(response.data.status === 2) {
+            Toast.fire({
+                icon: 'error',
+                title: response.data.message,
+            });
+            return
+        }
+        window.open(response.data.processUrl, '_blank');
+    }).catch((error) => {
+        store.commit('setLoading', false);
+
+        Toast.fire({
+            icon: 'error',
+            title: error,
+        });
+    });
+}
+
+async function tryAgainPayment(orderId){
+    store.commit('setLoading', true);
+
+    await axios.post(route('orders.try'), {
+        order_id: orderId,
+    }).then((response) => {
+        store.commit('setLoading', false);
+        if(response.data.status === 2) {
+            Toast.fire({
+                icon: 'error',
+                title: response.data.message,
+            });
+            return
+        }
+        window.open(response.data.processUrl, '_blank');
+    }).catch((error) => {
+        store.commit('setLoading', false);
+        Toast.fire({
+            icon: 'error',
+            title: error,
+        });
+    });
+}
+
 function back() {
     useForm().get(route('products.index'));
 };
@@ -45,11 +94,11 @@ function back() {
                                         <thead
                                             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
-                                            <th class="py-3 px-6" scope="col">Id</th>
+                                            <th class="py-3 px-6" scope="col">No°</th>
                                             <th class="py-3 px-6" scope="col">Detail</th>
                                             <th class="py-3 px-6" scope="col">Total</th>
                                             <th class="py-3 px-6" scope="col">Status</th>
-                                            <th class="py-3 px-6" scope="col">Voucher</th>
+                                            <th class="py-3 px-6" scope="col">Process ID</th>
                                             <th class="py-3 px-6" scope="col">Date</th>
                                             <th class="py-3 px-6" scope="col"></th>
                                         </tr>
@@ -91,12 +140,12 @@ function back() {
                                                     v-html="formatDate(new Date(order.created_at))"></td>
                                                 <td v-if="order.status === 'PENDING'" class="py-4 px-6">
                                                     <div class="py-2 flex justify-end items-center">
-                                                        <PrimaryButton class="ml-4">Retry 🙏</PrimaryButton>
+                                                        <PrimaryButton class="ml-4" @click="retryPayment(order.id)">Retry 🙏</PrimaryButton>
                                                     </div>
                                                 </td>
                                                 <td v-if="order.status === 'REJECTED' || order.status === 'ERROR'" class="py-4 px-6">
                                                     <div class="py-2 flex justify-end items-center">
-                                                        <PrimaryButton class="ml-4">Try Again 😄</PrimaryButton>
+                                                        <PrimaryButton class="ml-4"  @click="tryAgainPayment(order.id)">Try Again 😄</PrimaryButton>
                                                     </div>
                                                 </td>
 

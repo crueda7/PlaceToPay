@@ -36,6 +36,7 @@ Route::resource('shoppingCarts', ShoppingCartController::class)
 Route::post('/storeOrders', [OrderController::class, 'store'])
     ->name('shop.store');
 
+
 Route::resource('orders', OrderController::class)
     ->only(['index', 'create', 'store'])
     ->middleware(['auth', 'verified']);
@@ -43,5 +44,13 @@ Route::resource('orders', OrderController::class)
 Route::get('orders/checkout/{order}/{wallet}', [CheckoutController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('orders.checkout');
+
+Route::post('orders/checkout/retry', [CheckoutController::class, 'retry'])
+    ->middleware(['auth', 'verified'])
+    ->name('orders.retry');
+
+Route::post('orders/checkout/tryAgain', [CheckoutController::class, 'tryAgain'])
+    ->middleware(['auth', 'verified'])
+    ->name('orders.try');
 
 require __DIR__ . '/auth.php';
