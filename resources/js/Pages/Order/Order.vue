@@ -36,15 +36,13 @@ const form = useForm({
 });
 
 onMounted(() => {
-    console.log(props.order);
-    console.log(props.cart);
 
     if (Object.keys(props.cart).length === 0) {
         back();
     }
 });
 
-async function sendAxios() {
+async function send() {
     let order = props.order;
 
     store.commit('setLoading', true);
@@ -68,11 +66,11 @@ async function sendAxios() {
             title: error,
         });
     });
-};
+}
 
 function back() {
     useForm().get(route('products.index'));
-};
+}
 </script>
 
 <template>
@@ -87,7 +85,7 @@ function back() {
                             order 🤑</h2>
 
                         <div class="grid grid-cols-1 gap-8 p-6 bg-white dark:bg-gray-800 rounded border-gray-200">
-                            <form class="p-6 dark:bg-gray-600 rounded" @submit.prevent="sendAxios()">
+                            <form class="p-6 dark:bg-gray-600 rounded" @submit.prevent="send()">
                                 <div>
                                     <InputLabel class="dark:text-gray-800" for="name" value="Name"/>
                                     <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.customer_name" :model-value="order.customer_name" required autofocus autocomplete="name"/>
