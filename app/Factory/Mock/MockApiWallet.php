@@ -76,7 +76,7 @@ class MockApiWallet implements GatewayApiWallet
         $options = ['ERROR', 'OK', 'APPROVED', 'REJECTED', 'PENDING'];
         $status = constant("App\Constants\StatusOrders::{$options[rand(0, count($options) - 1)]}");
         return [
-            'processUrl' => 'checkout/fake/url',
+            'processUrl' => "checkout/retry/fake/url/$this->requestId",
             "requestId" => $this->requestId,
             "status" => [
                 "status" => $status->name,
