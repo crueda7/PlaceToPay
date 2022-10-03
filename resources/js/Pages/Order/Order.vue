@@ -16,6 +16,10 @@ const props = defineProps({
     cart: Object,
 });
 
+const data = {
+    isValidPhoneNumber: false,
+}
+
 const total = computed(() => {
     let total = 0;
 
@@ -68,13 +72,18 @@ async function send() {
     });
 }
 
+function validatePhoneNumber() {
+    const validationRegex = /3[0-9]{8}/;
+    data.isValidPhoneNumber = form.customer_mobile.match(validationRegex)
+}
+
 function back() {
     useForm().get(route('products.index'));
 }
 </script>
 
 <template>
-    <Head title="Order" />
+    <Head title="Order"/>
 
     <AuthenticatedLayout>
         <div class="py-12">
@@ -88,25 +97,40 @@ function back() {
                             <form class="p-6 dark:bg-gray-600 rounded" @submit.prevent="send()">
                                 <div>
                                     <InputLabel class="dark:text-gray-800" for="name" value="Name"/>
-                                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.customer_name" :model-value="order.customer_name" required autofocus autocomplete="name"/>
-                                    <InputError class="mt-2" :message="form.errors.customer_name"/>
+                                    <TextInput id="name" v-model="form.customer_name" :model-value="order.customer_name"
+                                               autocomplete="name" autofocus class="mt-1 block w-full"
+                                               required type="text"/>
+                                    <InputError :message="form.errors.customer_name" class="mt-2"/>
                                 </div>
 
                                 <div class="mt-4">
                                     <InputLabel class="dark:text-gray-800" for="email" value="Email"/>
-                                    <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.customer_email" :model-value="order.customer_email" required autocomplete="username"/>
-                                    <InputError class="mt-2" :message="form.errors.customer_email"/>
+                                    <TextInput id="email" v-model="form.customer_email"
+                                               :model-value="order.customer_email"
+                                               autocomplete="username" class="mt-1 block w-full"
+                                               required type="email"/>
+                                    <InputError :message="form.errors.customer_email" class="mt-2"/>
                                 </div>
 
                                 <div class="mt-4">
                                     <InputLabel class="dark:text-gray-800" for="mobile" value="Mobile"/>
-                                    <TextInput id="mobile" type="text" class="mt-1 block w-full" v-model="form.customer_mobile" required autofocus autocomplete="name"/>
-                                    <InputError class="mt-2" :message="form.errors.customer_mobile"/>
+                                    <TextInput id="mobile" v-model="form.customer_mobile"
+                                               autofocus class="mt-1 block w-full"
+                                               pattern="[0-9]{10}"
+                                               placeholder="3112223344"
+                                               required type="tel"
+                                               @keyup="validatePhoneNumber"/>
+                                    <p v-if="!data.isValidPhoneNumber"
+                                       class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oh, snapp!</span>
+                                        invalid phone number 😣</p>
+
                                 </div>
 
-                                <h2 class="pt-6 text-2xl font-bold tracking-tight text-gray-500 dark:text-white">Detail order 🛒</h2>
+                                <h2 class="pt-6 text-2xl font-bold tracking-tight text-gray-500 dark:text-white">Detail
+                                    order 🛒</h2>
 
-                                <div class="grid grid-cols-1 gap-8 p-6 bg-white dark:bg-gray-600 rounded border-gray-200">
+                                <div
+                                    class="grid grid-cols-1 gap-8 p-6 bg-white dark:bg-gray-600 rounded border-gray-200">
                                     <template v-for="(product, index) in cart" :key="'product'+index">
                                         <CardProductDetail :product="product" :showButton="false"></CardProductDetail>
                                     </template>
@@ -134,3 +158,10 @@ function back() {
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style>
+.invalid-warning {
+    margin: 10px auto;
+    color: red;
+}
+</style>
