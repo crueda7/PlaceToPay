@@ -36,7 +36,7 @@ class InformationRequest implements ShouldQueue
      */
     public function handle(): void
     {
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$this->order, $this->order->requestId, $this->order->id, 'mock']);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$this->order, $this->order->requestId, $this->order->id, 'placetopay']);
 
         $paymentGateway->requestStatus();
     }

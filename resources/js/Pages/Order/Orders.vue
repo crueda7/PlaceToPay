@@ -22,21 +22,21 @@ function calculateTotal(details) {
     return total;
 }
 
-async function retryPayment(orderId){
+async function retryPayment(orderId) {
     store.commit('setLoading', true);
 
     await axios.post(route('orders.retry'), {
         order_id: orderId,
     }).then((response) => {
         store.commit('setLoading', false);
-        if(response.data.status === 2) {
+        if (response.data.status === 2) {
             Toast.fire({
                 icon: 'error',
                 title: response.data.message,
             });
             return
         }
-        window.open(response.data.processUrl, '_blank');
+        window.location.replace(`${route('orders.index')}#${orderId}`)
     }).catch((error) => {
         store.commit('setLoading', false);
 
@@ -47,21 +47,22 @@ async function retryPayment(orderId){
     });
 }
 
-async function tryAgainPayment(orderId){
+async function tryAgainPayment(orderId) {
     store.commit('setLoading', true);
 
     await axios.post(route('orders.try'), {
         order_id: orderId,
     }).then((response) => {
         store.commit('setLoading', false);
-        if(response.data.status === 2) {
+        if (response.data.status === 2) {
             Toast.fire({
                 icon: 'error',
                 title: response.data.message,
             });
             return
         }
-        window.open(response.data.processUrl, '_blank');
+        if (response.data.processUrl.length > 10)
+            window.location.replace(response.data.processUrl)
     }).catch((error) => {
         store.commit('setLoading', false);
         Toast.fire({
@@ -97,7 +98,7 @@ function back() {
                                             <th class="py-3 px-6" scope="col">No°</th>
                                             <th class="py-3 px-6" scope="col">Detail</th>
                                             <th class="py-3 px-6" scope="col">Total</th>
-                                            <th class="py-3 px-6" scope="col">Status</th>
+                                            <th class="py-3 px-4" scope="col">Status</th>
                                             <th class="py-3 px-6" scope="col">Process ID</th>
                                             <th class="py-3 px-6" scope="col">Date</th>
                                             <th class="py-3 px-6" scope="col"></th>
@@ -106,7 +107,7 @@ function back() {
 
                                         <tbody>
                                         <template v-for="(order, index) in orders" :key="'order-'+index">
-                                            <tr class="border-b">
+                                            <tr class="border-b" :id="order.id">
                                                 <td class="py-4 px-6" v-html="order.id"></td>
                                                 <td class="py-4 px-6">
                                                     <ul class="space-y-1 max-w-md list-disc list-inside text-gray-500 dark:text-gray-400">
@@ -121,14 +122,17 @@ function back() {
                                                     v-html="'$'+calculateTotal(order.order_details)"></td>
                                                 <td class="py-4 px-6">
                                                     <p>
-                                                            <span
-                                                                v-if="order.status === 'ERROR' || order.status === 'REJECTED'"
-                                                                class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900"
-                                                                v-html="order.status"></span>
                                                         <span
-                                                            v-if="order.status === 'OK' || order.status === 'APPROVED'"
+                                                            v-if="order.status === 'ERROR' || order.status === 'REJECTED'"
+                                                            class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900"
+                                                            v-html="order.status"></span>
+                                                        <span
+                                                            v-if="order.status === 'APPROVED' "
                                                             class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
                                                             v-html="order.status"></span>
+                                                        <span
+                                                            v-if="order.status === 'OK'"
+                                                            class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">APPROVED</span>
                                                         <span
                                                             v-if="order.status === 'PENDING'"
                                                             class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900"
@@ -138,14 +142,19 @@ function back() {
                                                 <td class="py-4 px-6" v-html="order.requestId"></td>
                                                 <td class="py-4 px-6"
                                                     v-html="formatDate(new Date(order.created_at))"></td>
-                                                <td v-if="order.status === 'PENDING'" class="py-4 px-6">
+                                                <td v-if="order.status === 'PENDING' || order.status === 'OK'" class="py-4 px-6">
                                                     <div class="py-2 flex justify-end items-center">
-                                                        <PrimaryButton class="ml-4" @click="retryPayment(order.id)">Retry 🙏</PrimaryButton>
+                                                        <PrimaryButton class="ml-4" @click="retryPayment(order.id)">
+                                                            Retry 🙏
+                                                        </PrimaryButton>
                                                     </div>
                                                 </td>
-                                                <td v-if="order.status === 'REJECTED' || order.status === 'ERROR'" class="py-4 px-6">
+                                                <td v-if="order.status === 'REJECTED' || order.status === 'ERROR'"
+                                                    class="py-4 px-6">
                                                     <div class="py-2 flex justify-end items-center">
-                                                        <PrimaryButton class="ml-4"  @click="tryAgainPayment(order.id)">Try Again 😄</PrimaryButton>
+                                                        <PrimaryButton class="ml-4" @click="tryAgainPayment(order.id)">
+                                                            Try Again 😄
+                                                        </PrimaryButton>
                                                     </div>
                                                 </td>
 

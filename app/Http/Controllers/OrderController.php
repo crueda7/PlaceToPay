@@ -24,6 +24,7 @@ class OrderController extends Controller
      */
     public function index()
     {
+        $this->sync();
         $orders = Order::with(['orderDetails.product'])
             ->where('orders.user_id', '=', Auth::user()->id)
             ->orderBy('created_at', 'DESC')->get();
@@ -40,7 +41,7 @@ class OrderController extends Controller
      */
     public function sync()
     {
-        $failedOrders = Order::where('status', '=', 'PENDING')->get();
+        $failedOrders = Order::where([['status', '=', 'PENDING'], ['status', '=', 'OK']])->get();
         foreach ($failedOrders as $order)
             $this->dispatch(new InformationRequest($order));
 
@@ -89,7 +90,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return json_encode(ResponseHelper::response('2',$validator->errors()->first(),[]));
+            return json_encode(ResponseHelper::response('2', $validator->errors()->first(), []));
         }
 
         $validated = $validator->validated();
