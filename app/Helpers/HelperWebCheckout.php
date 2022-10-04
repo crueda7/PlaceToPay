@@ -2,13 +2,12 @@
 
 namespace App\Helpers;
 
-use App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class HelperWebCheckout
 {
     private string $locale, $endPointBase, $endpointSession;
+    private Model $order;
     private HelperRequest $helperRequest;
 
     function __construct(Model $order)
@@ -16,7 +15,7 @@ class HelperWebCheckout
         $this->endPointBase = config('app.BASE_ENDPOINT');
         $this->endpointSession = config('app.CREATE_REQUEST');
         $this->locale = config('app.LOCALE');
-        $this->helperRequest = new HelperRequest($order);
+        $this->order = $order;
     }
 
     public function endpointSession(): string
@@ -26,12 +25,14 @@ class HelperWebCheckout
 
     public function bodyRequest(): array
     {
-        return $this->helperRequest->bodyRequest($this->locale);
+        $helperRequest = new HelperRequest($this->order);
+        return $helperRequest->bodyRequest($this->locale);
     }
 
     public function bodyInformationRequest(): array
     {
-        return $this->helperRequest->bodyRequestInformation();
+        $helperRequest = new HelperRequest($this->order);
+        return ['auth' => $helperRequest->bodyRequestInformation()];
     }
 
 }

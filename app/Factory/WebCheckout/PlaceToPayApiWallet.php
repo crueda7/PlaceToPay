@@ -31,7 +31,7 @@ class PlaceToPayApiWallet implements GatewayApiWallet
 
     public function getBodyResponse(object $request): JsonResponse
     {
-        $bodyResponse = json_decode($request->body(), true);
+        $bodyResponse = json_decode($request->getBody(), true);
 
         return WalletResponse::getResponse($bodyResponse, $this->orderId, $this->endPoint, $this->requestId);
     }

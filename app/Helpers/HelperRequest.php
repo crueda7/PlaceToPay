@@ -107,7 +107,7 @@ class HelperRequest
             'buyer' => $this->getBuyer($this->order),
             'payment' => $this->getPayment($this->order),
             'expiration' => date('c', strtotime('+1 hour')),
-            'returnUrl' => route('products.index', $this->order->id),
+            'returnUrl' => route('orders.index', ['order' => $this->order->id]),
             'ipAddress' => request()->ip(),
             'userAgent' => request()->header('user-agent')];
 
