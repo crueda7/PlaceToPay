@@ -27,7 +27,7 @@ const total = computed(() => {
         total += item.price;
     })
 
-    return total;
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
 });
 
 const form = useForm({
@@ -138,7 +138,7 @@ function back() {
                                     <div class="py-2 flex justify-end items-center">
                                         <span class="text-3xl font-bold text-gray-900 dark:text-white">
                                             Total:
-                                            <span class="text-3xl font-bold text-orange-500" v-html="'$'+total"></span>
+                                            <span class="text-3xl font-bold text-orange-500" v-html="total"></span>
                                         </span>
                                     </div>
 

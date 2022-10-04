@@ -47,7 +47,7 @@ async function send() {
                v-html="product.description"></p>
 
             <div class="py-2 flex justify-between items-center">
-                <span class="text-3xl font-bold text-gray-900 dark:text-white" v-html="'$'+product.price"></span>
+                <span class="text-3xl font-bold text-gray-900 dark:text-white" v-html="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.price)"></span>
                 <PrimaryButton class="ml-4" @click="send()">Add 👀</PrimaryButton>
             </div>
         </div>
