@@ -1,12 +1,13 @@
 # PlaceToPay - Web Checkout!
 
-*Sitio web para la conexión con PlaceToPay para el procesamiento de transacciones de prueba usando Web Checkout*
+*Sitio web para la conexión con PlaceToPay para el procesamiento de transacciones de prueba usando Web Checkout* 
 
 ## Empezando
 
 Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento en su máquina local.
 
 ### Contenido
+
 - [Requisitos previos](#install)
 - [Clonar proyecto](#Usage)
 - [Instalación](#Response-Properties)
@@ -16,7 +17,7 @@ Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento 
 
 ### Requisitos previos
 
-- [PHP >= 8.1](https://www.php.net/manual/en/getting-started.php)
+- [PHP >= 8.0](https://www.php.net/manual/en/getting-started.php)
 - [Laravel 9.x](https://laravel.com/docs/9.x/installation)
 - [Composer](https://getcomposer.org/doc/00-intro.md)
 - [Node.js](https://nodejs.org/en/docs/guides/getting-started-guide/)
@@ -27,21 +28,44 @@ Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento 
 Para generar una copia del proyecto ejecute en su máquina local:
 `git clone https://github.com/crueda7/PlaceToPay.git`
 
+### Configuración
+
+Cree una base de datos MySQL con el nombre que desee,  posteriormente deberá configurar los parámetros de conexión en el archivo **.env** y los parámetros de conexión con webcheckout.
+
+DB_CONNECTION=mysql  
+DB_HOST=127.0.0.1  
+DB_PORT=3306  
+DB_DATABASE=placetopayshop  
+DB_USERNAME=root  
+DB_PASSWORD=  
+...  
+BASE_ENDPOINT=https://checkout-co.placetopay.dev/ 
+CREATE_REQUEST=api/session  
+LOGIN=  
+SECRET_KEY=  
+LOCALE=es_CO
+
+> En la raíz del proyecto existe un archivo de configuración de ejemplo con la estructura requerida **example.env** si desea puede utilizarlo renombrándolo a **.env** y dentro del mismo agregar/modificar los parámetros faltantes.
+
+Por último genere la llave identificador de su proyecto con el comando:  
+`php artisan key:generate`
+
 ### Instalación
+
 Ubíquese en la carpeta de su proyecto y ejecute las siguientes instrucciones.
 
-Instalar de las dependencias:
-`composer install`
+Instalar de las dependencias:  
+`composer install`  
 `npm install`
 
-Ejecutar las migraciones:
+Ejecutar las migraciones:  
 `php artisan migrate`
 
-Ejecutar los seeders:
+Ejecutar los seeders:  
 `php artisan db:seed`
 
-Inicializar el proyecto:
-`php artisan serve`
+Inicializar el proyecto:  
+`php artisan serve`  
 `npm run dev`
 
 Ahora puede visualizar el proyecto en su navegador de preferencia con el puerto 8000.
