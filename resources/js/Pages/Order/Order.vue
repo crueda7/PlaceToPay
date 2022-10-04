@@ -60,8 +60,8 @@ async function send() {
         cart: props.cart,
     }).then((response) => {
         store.commit('setLoading', false);
-        useForm().get(route('orders.index'));
-        window.open(response.data.processUrl, '_blank');
+        if (response.data.processUrl.length > 10)
+            window.location.replace(response.data.processUrl)
     }).catch((error) => {
         store.commit('setLoading', false);
 

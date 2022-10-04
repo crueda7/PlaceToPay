@@ -25,7 +25,7 @@ class CheckoutController extends Controller
         /**
          * Cambiar el ultimo parametro 'mock' por $wallet
          */
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, null, null, 'mock']);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, null, null, $this->wallet]);
 
         $response = $paymentGateway->connect();
 
@@ -52,7 +52,7 @@ class CheckoutController extends Controller
 
         $order = Order::find($validator->getData()['order_id']);
 
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, null, null, 'mock']);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, $order->requestId, $order->id, $this->wallet]);
 
         $response = $paymentGateway->connect();
 
@@ -80,7 +80,7 @@ class CheckoutController extends Controller
 
         $order = Order::find($validator->getData()['order_id']);
 
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, $order->requestId, $order->id, 'mock']);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, $order->requestId, $order->id, $this->wallet]);
 
         $response = $paymentGateway->requestStatus();
 
