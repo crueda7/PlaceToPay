@@ -76,7 +76,7 @@ function back() {
                v-html="product.description"></p>
 
             <div class="py-2 flex justify-end items-center">
-                <span class="text-2xl font-semibold text-gray-900 dark:text-white" v-html="'$'+product.price"></span>
+                <span class="text-2xl font-semibold text-gray-900 dark:text-white" v-html="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.price)"></span>
             </div>
         </div>
     </div>

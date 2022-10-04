@@ -19,7 +19,7 @@ function calculateTotal(details) {
         total += detail.product.price;
     });
 
-    return total;
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total)
 }
 
 async function retryPayment(orderId) {
@@ -119,7 +119,7 @@ function back() {
                                                     </ul>
                                                 </td>
                                                 <td class="py-4 px-6"
-                                                    v-html="'$'+calculateTotal(order.order_details)"></td>
+                                                    v-html="calculateTotal(order.order_details)"></td>
                                                 <td class="py-4 px-6">
                                                     <p>
                                                         <span
@@ -142,7 +142,7 @@ function back() {
                                                 <td class="py-4 px-6" v-html="order.requestId"></td>
                                                 <td class="py-4 px-6"
                                                     v-html="formatDate(new Date(order.created_at))"></td>
-                                                <td v-if="order.status === 'PENDING' || order.status === 'OK'" class="py-4 px-6">
+                                                <td v-if="order.status === 'PENDING'" class="py-4 px-6">
                                                     <div class="py-2 flex justify-end items-center">
                                                         <PrimaryButton class="ml-4" @click="retryPayment(order.id)">
                                                             Retry 🙏

@@ -20,7 +20,7 @@ class ProductFactory extends Factory
             'title' => fake()->name(),
             'description' => fake()->text(150),
             'image' => fake()->imageUrl($width = 200, $height = 200),
-            'price' => fake()->numberBetween($min = 10, $max = 300)
+            'price' => fake()->numberBetween($min = 10000, $max = 300000)
         ];
     }
 }
