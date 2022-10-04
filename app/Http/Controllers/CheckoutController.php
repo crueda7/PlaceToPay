@@ -16,11 +16,10 @@ class CheckoutController extends Controller
 
     /**
      * @param Order $order
-     * @param string $wallet
      * @return JsonResponse
      * @throws BindingResolutionException
      */
-    public function create(Order $order, string $wallet): JsonResponse
+    public function create(Order $order): JsonResponse
     {
         /**
          * Cambiar el ultimo parametro 'mock' por $wallet
