@@ -17,7 +17,7 @@ Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento 
 
 ### Requisitos previos
 
-- [PHP >= 8.0](https://www.php.net/manual/en/getting-started.php)
+- [PHP >= 8.1](https://www.php.net/manual/en/getting-started.php)
 - [Laravel 9.x](https://laravel.com/docs/9.x/installation)
 - [Composer](https://getcomposer.org/doc/00-intro.md)
 - [Node.js](https://nodejs.org/en/docs/guides/getting-started-guide/)
