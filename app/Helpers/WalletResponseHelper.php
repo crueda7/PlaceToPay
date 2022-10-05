@@ -5,21 +5,17 @@ namespace App\Helpers;
 use App\Constants\StatusOrders;
 use App\Models\Order;
 
-class WalletResponse
+class WalletResponseHelper
 {
     public static function getResponse(array $jsonObject, ?int $orderId, ?string $endPoint, ?string $requestId): \Illuminate\Http\JsonResponse
     {
         $statusCode = ($jsonObject['status']) ? $jsonObject['status']['status'] : 'ERROR';
         $status = constant("App\Constants\StatusOrders::{$statusCode}");
 
-        $response = array();
-        foreach ($jsonObject as $key => $value)
-            $response[$key] = $value;
-        $response['message'] = $status->name;
-        $response['status'] = $status->status();
 
         $order = Order::findOrFail($orderId);
         $order->status = $status->name;
+        $order->message = $jsonObject['status']['message'];
 
         switch ($status) {
             case StatusOrders::OK:
@@ -42,12 +38,12 @@ class WalletResponse
             }
             default:
             {
-                $response['message'] = ($status == StatusOrders::ERROR) ? 'Whops, looks like something went wrong error' : 'Error try again later';
+                $jsonObject['status']['message'] = ($status == StatusOrders::ERROR) ? 'Whops, looks like something went wrong error' : 'Error try again later';
                 break;
             }
         }
         $order->save();
 
-        return response()->json($response, $status->status());
+        return response()->json($jsonObject, $status->status());
     }
 }

@@ -4,8 +4,13 @@ namespace App\Helpers;
 
 class ResponseHelper
 {
-    public static function response(int $status, string $message, array $data): array
+    public static function Error(string $message): array
     {
-        return array('status' => $status, 'message' => $message, 'data' => $data);
+        return array('status' => '2', 'message' => $message, 'data' => []);
+    }
+
+    public static function Success(string $message, array $data): array
+    {
+        return array('status' => '1', 'message' => $message, 'data' => $data);
     }
 }

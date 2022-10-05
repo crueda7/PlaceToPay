@@ -41,7 +41,7 @@ Route::resource('orders', OrderController::class)
     ->only(['index', 'create', 'store'])
     ->middleware(['auth', 'verified']);
 
-Route::get('orders/checkout/{order}/{wallet}', [CheckoutController::class, 'create'])
+Route::get('orders/checkout/{order}', [CheckoutController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('orders.checkout');
 

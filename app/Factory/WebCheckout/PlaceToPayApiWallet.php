@@ -3,7 +3,7 @@
 namespace App\Factory\WebCheckout;
 
 use App\Factory\GatewayApiWallet;
-use App\Helpers\WalletResponse;
+use App\Helpers\WalletResponseHelper;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 
@@ -33,7 +33,7 @@ class PlaceToPayApiWallet implements GatewayApiWallet
     {
         $bodyResponse = json_decode($request->getBody(), true);
 
-        return WalletResponse::getResponse($bodyResponse, $this->orderId, $this->endPoint, $this->requestId);
+        return WalletResponseHelper::getResponse($bodyResponse, $this->orderId, $this->endPoint, $this->requestId);
     }
 
     public function getRequestInformation(): object

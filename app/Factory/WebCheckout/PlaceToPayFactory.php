@@ -3,7 +3,7 @@
 namespace App\Factory\WebCheckout;
 
 use App\Factory\GatewayApiWallet;
-use App\Helpers\HelperWebCheckout;
+use App\Helpers\WebCheckoutHelper;
 use Illuminate\Database\Eloquent\Model;
 
 class PlaceToPayFactory extends \App\Factory\FactoryApiWalletGateway
@@ -22,7 +22,7 @@ class PlaceToPayFactory extends \App\Factory\FactoryApiWalletGateway
 
     public function createRequestGateway(): GatewayApiWallet
     {
-        $helper = new HelperWebCheckout($this->order);
+        $helper = new WebCheckoutHelper($this->order);
 
         list ($body, $orderId) = $helper->bodyRequest();
 
@@ -31,7 +31,7 @@ class PlaceToPayFactory extends \App\Factory\FactoryApiWalletGateway
 
     public function getRequestRequestGateway(): GatewayApiWallet
     {
-        $helper = new HelperWebCheckout($this->order);
+        $helper = new WebCheckoutHelper($this->order);
 
         $body = $helper->bodyInformationRequest();
 

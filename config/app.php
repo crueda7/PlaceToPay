@@ -211,6 +211,7 @@ return [
          */
         App\Providers\PaymentGatewayProvider::class,
         App\Providers\JobServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
 
     ],
 

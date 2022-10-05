@@ -2,55 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ControllerHelper;
 use App\Helpers\ResponseHelper;
-use App\Models\ShoppingCart;
+use App\Interfaces\ShoppingCartRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ShoppingCartController extends Controller
 {
+    private ShoppingCartRepository $shoppingCartRepository;
+
+    public function __construct(ShoppingCartRepository $shoppingCartRepository)
+    {
+        $this->shoppingCartRepository = $shoppingCartRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Inertia\Response
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
-        $cart = DB::table('products')
-            ->join('shopping_carts', 'products.id', '=', 'shopping_carts.product_id')
-            ->select('products.*', 'shopping_carts.id AS cart_id')
-            ->where('shopping_carts.user_id', '=', Auth::user()->id)->get();
-
-
         return Inertia::render('Shop/ShoppingCart', [
-            'shoppingCarts' => $cart
+            'shoppingCarts' => $this->shoppingCartRepository->cart()
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return false|string
      * @throws ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): bool|string
     {
-        $validator = Validator::make($request->all(), [
+        $validator = ControllerHelper::validateRequest($request, [
             'product_id' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
-            return json_encode(ResponseHelper::response('2', $validator->errors()->first(), []));
+            return ControllerHelper::encodeStringResponse(ResponseHelper::Error($validator->errors()->first()));
         }
 
-        $validated = $validator->validated();
-        $request->user()->shoppingCarts()->create($validated);
-        return json_encode(ResponseHelper::response('1', 'Product added!', []));
+        $response = $this->shoppingCartRepository->saveItem($validator->validated());
+
+        return ControllerHelper::encodeStringResponse(ResponseHelper::Success($response, []));
     }
 
     /**
@@ -59,14 +61,11 @@ class ShoppingCartController extends Controller
      * @param int $id
      * @return false|string
      */
-    public function destroy(int $id)
+    public function destroy(int $id): bool|string
     {
-        $shoppingCart = ShoppingCart::find($id);
-        $result = $shoppingCart->delete();
-
-        return json_encode(
-            ($result == 0) ? ResponseHelper::response('2', 'Error deleting product', []) :
-                ResponseHelper::response('1', 'Product deleted!', [])
+        $result = $this->shoppingCartRepository->removeItem($id);
+        return ControllerHelper::encodeStringResponse(
+            ($result[0] == 0) ? ResponseHelper::Error($result[1]) : ResponseHelper::Success($result[1], [])
         );
     }
 }

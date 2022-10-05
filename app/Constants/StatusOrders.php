@@ -2,6 +2,8 @@
 
 namespace App\Constants;
 
+use App\Interfaces\StatusOrder;
+
 enum StatusOrders implements StatusOrder
 {
 
