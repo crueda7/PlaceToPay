@@ -4,7 +4,7 @@ namespace App\Factory\Mock;
 
 use App\Constants\StatusOrders;
 use App\Factory\GatewayApiWallet;
-use App\Helpers\WalletResponse;
+use App\Helpers\WalletResponseHelper;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
@@ -30,12 +30,12 @@ class MockApiWallet implements GatewayApiWallet
 
     public function getBodyResponse(object $request): JsonResponse
     {
-        return WalletResponse::getResponse($this->getFakeBodyResponse(), $this->orderId, $this->endPoint, $this->requestId);
+        return WalletResponseHelper::getResponse($this->getFakeBodyResponse(), $this->orderId, $this->endPoint, $this->requestId);
     }
 
     public function getRequestInformation(): object
     {
-        return WalletResponse::getResponse($this->getFakeInformationResponse(), $this->orderId, $this->endPoint, $this->requestId);
+        return WalletResponseHelper::getResponse($this->getFakeInformationResponse(), $this->orderId, $this->endPoint, $this->requestId);
     }
 
     /**

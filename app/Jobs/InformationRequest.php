@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Constants\AppConfig;
 use App\Factory\FactoryApiWalletGateway;
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
@@ -10,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class InformationRequest implements ShouldQueue
 {
@@ -36,8 +38,9 @@ class InformationRequest implements ShouldQueue
      */
     public function handle(): void
     {
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$this->order, $this->order->requestId, $this->order->id, 'placetopay']);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$this->order, $this->order->requestId, $this->order->id, AppConfig::GATEWAY]);
 
-        $paymentGateway->requestStatus();
+
+        Log::info($paymentGateway->requestStatus());
     }
 }

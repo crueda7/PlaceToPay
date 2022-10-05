@@ -42,12 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function orders()
+    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function shoppingCarts()
+    public function shoppingCarts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ShoppingCart::class);
     }

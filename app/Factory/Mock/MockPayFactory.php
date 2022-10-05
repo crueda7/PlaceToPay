@@ -3,7 +3,7 @@
 namespace App\Factory\Mock;
 
 use App\Factory\GatewayApiWallet;
-use App\Helpers\HelperWebCheckout;
+use App\Helpers\WebCheckoutHelper;
 use Illuminate\Database\Eloquent\Model;
 
 class MockPayFactory extends \App\Factory\FactoryApiWalletGateway
@@ -21,7 +21,7 @@ class MockPayFactory extends \App\Factory\FactoryApiWalletGateway
 
     public function createRequestGateway(): GatewayApiWallet
     {
-        $helper = new HelperWebCheckout($this->order);
+        $helper = new WebCheckoutHelper($this->order);
 
         list ($body, $orderId) = $helper->bodyRequest();
 
@@ -30,7 +30,7 @@ class MockPayFactory extends \App\Factory\FactoryApiWalletGateway
 
     public function getRequestRequestGateway(): GatewayApiWallet
     {
-        $helper = new HelperWebCheckout($this->order);
+        $helper = new WebCheckoutHelper($this->order);
 
         $body = $helper->bodyInformationRequest();
 

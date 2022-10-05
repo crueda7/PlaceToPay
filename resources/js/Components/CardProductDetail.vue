@@ -8,6 +8,7 @@ const store = useStore();
 
 const props = defineProps({
     product: Object,
+    shoppingCartId: Number,
     showButton: Boolean,
 });
 
@@ -29,7 +30,7 @@ function confirm() {
 
 async function remove() {
     let data = {
-        id: props.product.cart_id,
+        id: props.shoppingCartId,
     };
 
     store.commit('setLoading', true);
@@ -37,10 +38,10 @@ async function remove() {
     await axios.delete(route('shoppingCarts.destroy', data)).then((response) => {
         store.commit('setLoading', false);
 
-        response.data.status == 1 ?  useForm().get(route('shoppingCarts.index')) : '';
+        response.data.status === "1" ?  useForm().get(route('shoppingCarts.index')) : '';
 
         Toast.fire({
-            icon: response.data.status == 1 ? 'success' : 'error',
+            icon: response.data.status === "1" ? 'success' : 'error',
             title: response.data.message,
         })
     }).catch((error) => {

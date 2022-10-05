@@ -7,7 +7,7 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class HelperRequest
+class RequestHelper
 {
     private string $login, $apiKey, $tranKey, $seed, $nonce;
     private Model $order;

@@ -18,9 +18,10 @@ class Order extends Model
         'requestId',
         'processUrl',
         'status',
+        'message',
     ];
 
-    public function orderDetails()
+    public function orderDetails(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(OrderDetail::class);
     }

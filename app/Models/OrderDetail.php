@@ -15,7 +15,7 @@ class OrderDetail extends Model
         'order_id',
     ];
 
-    function product()
+    function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
