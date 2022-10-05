@@ -2,35 +2,33 @@
 import {useStore} from 'vuex';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-const store = useStore();
+const store = useStore()
 
 const props = defineProps({
     product: Object,
-});
+})
 
 async function send() {
     let data = {
         product_id: props.product.id,
-    };
+    }
 
-    store.commit('setLoading', true);
+    store.commit('setLoading', true)
 
     await axios.post(route('shoppingCarts.store'), data)
         .then((response) => {
-            store.commit('setLoading', false);
-
+            store.commit('setLoading', false)
             Toast.fire({
-                icon: response.data.status === 1 ? 'success' : 'error',
+                icon: response.data.status === "1" ? 'success' : 'error',
                 title: response.data.message,
             });
         }).catch((error) => {
-            store.commit('setLoading', false);
-
+            store.commit('setLoading', false)
             Toast.fire({
                 icon: 'error',
                 title: error,
             });
-        });
+        })
 }
 </script>
 
@@ -47,7 +45,8 @@ async function send() {
                v-html="product.description"></p>
 
             <div class="py-2 flex justify-between items-center">
-                <span class="text-3xl font-bold text-gray-900 dark:text-white" v-html="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.price)"></span>
+                <span class="text-3xl font-bold text-gray-900 dark:text-white"
+                      v-html="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.price)"></span>
                 <PrimaryButton class="ml-4" @click="send()">Add 👀</PrimaryButton>
             </div>
         </div>

@@ -9,12 +9,21 @@ import InputError from '@/Components/InputError.vue';
 import CardProductDetail from "@/Components/CardProductDetail.vue";
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-const store = useStore();
+const store = useStore()
 
 const props = defineProps({
     order: Object,
     cart: Object,
-});
+})
+
+const form = useForm({
+    customer_name: '',
+    customer_email: '',
+    customer_mobile: '',
+    status: '',
+    user_id: '',
+    cart: [],
+})
 
 const data = {
     isValidPhoneNumber: false,
@@ -24,27 +33,19 @@ const total = computed(() => {
     let total = 0;
 
     props.cart.forEach(item => {
-        total += item.price;
+        total += item.product.price;
     })
 
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total);
-});
+})
 
-const form = useForm({
-    customer_name: '',
-    customer_email: '',
-    customer_mobile: '',
-    status: '',
-    user_id: '',
-    cart: [],
-});
 
 onMounted(() => {
 
     if (Object.keys(props.cart).length === 0) {
         back();
     }
-});
+})
 
 async function send() {
     let order = props.order;
@@ -59,17 +60,17 @@ async function send() {
         user_id: order.user_id,
         cart: props.cart,
     }).then((response) => {
-        store.commit('setLoading', false);
-        if (response.data.processUrl.length > 10)
+        store.commit('setLoading', false)
+        if (response.data.processUrl && response.data.processUrl.length > 10)
             window.location.replace(response.data.processUrl)
     }).catch((error) => {
-        store.commit('setLoading', false);
+        store.commit('setLoading', false)
 
         Toast.fire({
             icon: 'error',
             title: error,
-        });
-    });
+        })
+    })
 }
 
 function validatePhoneNumber() {
@@ -92,7 +93,6 @@ function back() {
                     <div class="p-6 bg-white dark:bg-gray-600">
                         <h2 class="py-2 text-3xl font-bold tracking-tight text-orange-500">Information
                             order 🤑</h2>
-
                         <div class="grid grid-cols-1 gap-8 p-6 bg-white dark:bg-gray-800 rounded border-gray-200">
                             <form class="p-6 dark:bg-gray-600 rounded" @submit.prevent="send()">
                                 <div>
@@ -131,8 +131,8 @@ function back() {
 
                                 <div
                                     class="grid grid-cols-1 gap-8 p-6 bg-white dark:bg-gray-600 rounded border-gray-200">
-                                    <template v-for="(product, index) in cart" :key="'product'+index">
-                                        <CardProductDetail :product="product" :showButton="false"></CardProductDetail>
+                                    <template v-for="(itemCart, index) in cart" :key="'product'+index">
+                                        <CardProductDetail :product="itemCart.product" :showButton="false"></CardProductDetail>
                                     </template>
 
                                     <div class="py-2 flex justify-end items-center">

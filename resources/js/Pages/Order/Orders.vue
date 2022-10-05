@@ -19,7 +19,7 @@ function calculateTotal(details) {
         total += detail.product.price;
     });
 
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total)
+    return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(total)
 }
 
 async function retryPayment(orderId) {
@@ -75,6 +75,14 @@ async function tryAgainPayment(orderId) {
 function back() {
     useForm().get(route('products.index'));
 };
+
+function showTooltip(id) {
+    document.getElementById('tooltip-'+id).classList.remove('invisible')
+};
+
+function hideTooltip(id) {
+    document.getElementById('tooltip-'+id).classList.add('invisible')
+};
 </script>
 
 <template>
@@ -107,7 +115,7 @@ function back() {
 
                                         <tbody>
                                         <template v-for="(order, index) in orders" :key="'order-'+index">
-                                            <tr class="border-b" :id="order.id">
+                                            <tr :id="order.id" class="border-b">
                                                 <td class="py-4 px-6" v-html="order.id"></td>
                                                 <td class="py-4 px-6">
                                                     <ul class="space-y-1 max-w-md list-disc list-inside text-gray-500 dark:text-gray-400">
@@ -121,23 +129,24 @@ function back() {
                                                 <td class="py-4 px-6"
                                                     v-html="calculateTotal(order.order_details)"></td>
                                                 <td class="py-4 px-6">
-                                                    <p>
+                                                    <div @mouseover="showTooltip(order.id)" @mouseleave="hideTooltip(order.id)">
                                                         <span
                                                             v-if="order.status === 'ERROR' || order.status === 'REJECTED'"
                                                             class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-900"
                                                             v-html="order.status"></span>
                                                         <span
-                                                            v-if="order.status === 'APPROVED' "
+                                                            v-if="order.status === 'APPROVED'"
                                                             class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900"
                                                             v-html="order.status"></span>
                                                         <span
-                                                            v-if="order.status === 'OK'"
-                                                            class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900">APPROVED</span>
-                                                        <span
-                                                            v-if="order.status === 'PENDING'"
-                                                            class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900"
-                                                            v-html="order.status"></span>
-                                                    </p>
+                                                            v-if="order.status === 'PENDING' || order.status === 'OK'"
+                                                            class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-200 dark:text-yellow-900">PENDING</span>
+                                                    </div>
+                                                    <div :id="'tooltip-'+order.id" class="absolute invisible z-10 w-64 text-sm font-light text-red-500 bg-white rounded-lg border border-red-200 duration-300 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                                        <div class="py-2 px-3">
+                                                            <p><span>{{ order.message ? order.message : 'Sin descripción' }}</span></p>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                                 <td class="py-4 px-6" v-html="order.requestId"></td>
                                                 <td class="py-4 px-6"
