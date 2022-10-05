@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AppConfig;
 use App\Factory\FactoryApiWalletGateway;
+use App\Helpers\ControllerHelper;
 use App\Helpers\ResponseHelper;
+use App\Interfaces\OrderRepository;
 use App\Models\Order;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CheckoutController extends Controller
 {
-    protected string $wallet = 'placetopay';
+    private OrderRepository $orderRepository;
+
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
 
     /**
      * @param Order $order
@@ -21,14 +28,9 @@ class CheckoutController extends Controller
      */
     public function create(Order $order): JsonResponse
     {
-        /**
-         * Cambiar el ultimo parametro 'mock' por $wallet
-         */
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, null, null, $this->wallet]);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, null, null, AppConfig::GATEWAY]);
 
-        $response = $paymentGateway->connect();
-
-        return response()->json($response->getData());
+        return ControllerHelper::encodeJsonResponse($paymentGateway->connect());
     }
 
     /**
@@ -38,24 +40,17 @@ class CheckoutController extends Controller
      */
     public function tryAgain(Request $request)
     {
-        /**
-         * Cambiar el ultimo parametro 'mock' por $this->wallet
-         */
-        $validator = Validator::make($request->all(), [
-            'order_id' => 'required|integer',
-        ]);
+        $validator = ControllerHelper::validateRequest($request, ['order_id' => 'required|integer',]);
 
         if ($validator->fails()) {
-            return json_encode(ResponseHelper::response('2',$validator->errors()->first(),[]));
+            return ControllerHelper::encodeStringResponse(ResponseHelper::Error($validator->errors()->first()));
         }
 
-        $order = Order::find($validator->getData()['order_id']);
+        $order = $this->orderRepository->orderById($validator->getData()['order_id']);
 
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, $order->requestId, $order->id, $this->wallet]);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, null, $order->id, AppConfig::GATEWAY]);
 
-        $response = $paymentGateway->connect();
-
-        return response()->json($response->getData());
+        return ControllerHelper::encodeJsonResponse($paymentGateway->connect());
     }
 
     /**
@@ -66,23 +61,16 @@ class CheckoutController extends Controller
 
     function retry(Request $request)
     {
-        /**
-         * Cambiar el ultimo parametro 'mock' por $this->wallet
-         */
-        $validator = Validator::make($request->all(), [
-            'order_id' => 'required|integer',
-        ]);
+        $validator = ControllerHelper::validateRequest($request, ['order_id' => 'required|integer',]);
 
         if ($validator->fails()) {
-            return json_encode(ResponseHelper::response('2', $validator->errors()->first(), []));
+            return ControllerHelper::encodeStringResponse(ResponseHelper::Error($validator->errors()->first()));
         }
 
-        $order = Order::find($validator->getData()['order_id']);
+        $order = $this->orderRepository->orderById($validator->getData()['order_id']);
 
-        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, $order->requestId, $order->id, $this->wallet]);
+        $paymentGateway = app()->make(FactoryApiWalletGateway::class, [$order, $order->requestId, $order->id, AppConfig::GATEWAY]);
 
-        $response = $paymentGateway->requestStatus();
-
-        return response()->json($response->getData());
+        return ControllerHelper::encodeJsonResponse($paymentGateway->requestStatus());
     }
 }
