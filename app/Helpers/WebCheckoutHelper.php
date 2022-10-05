@@ -4,11 +4,11 @@ namespace App\Helpers;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HelperWebCheckout
+class WebCheckoutHelper
 {
     private string $locale, $endPointBase, $endpointSession;
     private Model $order;
-    private HelperRequest $helperRequest;
+    private RequestHelper $helperRequest;
 
     function __construct(Model $order)
     {
@@ -25,13 +25,13 @@ class HelperWebCheckout
 
     public function bodyRequest(): array
     {
-        $helperRequest = new HelperRequest($this->order);
+        $helperRequest = new RequestHelper($this->order);
         return $helperRequest->bodyRequest($this->locale);
     }
 
     public function bodyInformationRequest(): array
     {
-        $helperRequest = new HelperRequest($this->order);
+        $helperRequest = new RequestHelper($this->order);
         return ['auth' => $helperRequest->bodyRequestInformation()];
     }
 
