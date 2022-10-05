@@ -2,13 +2,13 @@
 
 namespace App\Interfaces;
 
-use Illuminate\Database\Eloquent\Collection;
+use \Illuminate\Support\Collection;
 
 interface ShoppingCartRepository
 {
     public function cart(): Collection;
 
-    public function saveItem(int $productId): Collection;
+    public function saveItem(array $newCart): string;
 
-    public function removeItem(int $productId): Collection;
+    public function removeItem(int $id): array;
 }

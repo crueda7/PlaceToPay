@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepositoryImpl implements \App\Interfaces\ProductRepository
@@ -9,6 +10,6 @@ class ProductRepositoryImpl implements \App\Interfaces\ProductRepository
 
     public function products(): Collection
     {
-        // TODO: Implement products() method.
+        return Product::all();
     }
 }

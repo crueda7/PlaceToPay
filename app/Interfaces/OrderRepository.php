@@ -11,6 +11,8 @@ interface OrderRepository
 
     public function order(): Order;
 
+    public function pendingOrders(): Collection;
+
     public function orderById(int $orderId): Order;
 
     public function save(array $newOrder): Order;
