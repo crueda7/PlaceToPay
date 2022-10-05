@@ -10,10 +10,10 @@ Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento 
 
 - [Requisitos previos](#install)
 - [Clonar proyecto](#Usage)
-- [Instalación](#Response-Properties)
-- [Error handling](#Error-handling)
-- [Api codes](#Api-codes)
-- [Request & Response Examples](#request-response-examples)
+- [Configuración](#Configuración)
+- [Instalación](#Instalación)
+- [Funcionalidades](#Funcionalidad)
+- [Autores](#Autores)
 
 ### Requisitos previos
 
@@ -32,20 +32,23 @@ Para generar una copia del proyecto ejecute en su máquina local:
 
 Cree una base de datos MySQL con el nombre que desee,  posteriormente deberá configurar los parámetros de conexión en el archivo **.env** y los parámetros de conexión con webcheckout.
 
-DB_CONNECTION=mysql  
-DB_HOST=127.0.0.1  
-DB_PORT=3306  
-DB_DATABASE=placetopayshop  
-DB_USERNAME=root  
-DB_PASSWORD=  
+`DB_CONNECTION=mysql`    
+`DB_HOST=127.0.0.1`    
+`DB_PORT=3306`    
+`DB_DATABASE=placetopayshop`    
+`DB_USERNAME=root`    
+`DB_PASSWORD=`    
 ...  
-BASE_ENDPOINT=https://checkout-co.placetopay.dev/ 
-CREATE_REQUEST=api/session  
-LOGIN=  
-SECRET_KEY=  
-LOCALE=es_CO
+`BASE_ENDPOINT=https://checkout-co.placetopay.dev/`  
+`CREATE_REQUEST=api/session`    
+`LOGIN=`    
+`SECRET_KEY=`    
+`LOCALE=es_CO`  
 
-> En la raíz del proyecto existe un archivo de configuración de ejemplo con la estructura requerida **example.env** si desea puede utilizarlo renombrándolo a **.env** y dentro del mismo agregar/modificar los parámetros faltantes.
+> En la raíz del proyecto existe un archivo de configuración de ejemplo con la estructura requerida **.env.example** si desea puede utilizarlo renombrándolo a **.env** y dentro del mismo agregar/modificar los parámetros faltantes.
+> O puede ejecutar el siguiente comando:
+> `cp .env.example .env`  
+> `php artisan key:generate`
 
 Por último genere la llave identificador de su proyecto con el comando:  
 `php artisan key:generate`
@@ -84,6 +87,10 @@ Abra en su navegador de preferencia la url http://127.0.0.1:8000 o  http://local
 - Realizar proceso de pago de la orden de compra.
 - Visualizar las ordenes de compra del usuario en sesión.
 - Reintentar el proceso de pago de las ordenes de compras rechazadas o continuar con los pagos pendientes.
+
+### Ejecutar los commands del schedule
+
+Para ejecutar el `command` para actualizar los estados de las ordenes ejecute  `php artisan command:updategateway`
 
 ### Autores
 
